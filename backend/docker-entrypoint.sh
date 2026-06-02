@@ -19,18 +19,15 @@ normalize_database_url() {
 
   case "$url" in
     *localhost*|*127.0.0.1*)
-      fail "DATABASE_URL points to localhost. On Railway: add PostgreSQL, then reference its DATABASE_URL on this service."
+      fail "DATABASE_URL points to localhost. Use Render Postgres Internal Database URL on this web service."
       ;;
   esac
 
   case "$url" in
-    *railway.internal*|*.internal*)
-      printf '%s' "$url"
-      ;;
     *sslmode=*|*ssl=*)
       printf '%s' "$url"
       ;;
-    *railway.app*|*rlwy.net*)
+    *render.com*)
       case "$url" in
         *\?*) printf '%s' "${url}&sslmode=require" ;;
         *) printf '%s' "${url}?sslmode=require" ;;
@@ -43,7 +40,7 @@ normalize_database_url() {
 }
 
 if [ -z "${DATABASE_URL:-}" ]; then
-  fail "DATABASE_URL is not set. Railway: + New → Database → PostgreSQL, then Variables → Add Reference → DATABASE_URL."
+  fail "DATABASE_URL is not set. Render: New → PostgreSQL, then add Internal Database URL to this service Environment."
 fi
 
 export DATABASE_URL="$(normalize_database_url "$DATABASE_URL")"
@@ -53,7 +50,7 @@ attempt=1
 max_attempts=30
 until npx prisma db push --skip-generate; do
   if [ "$attempt" -ge "$max_attempts" ]; then
-    fail "prisma db push failed after ${max_attempts} attempts. Link Postgres DATABASE_URL to this service and redeploy."
+    fail "prisma db push failed after ${max_attempts} attempts. Use Postgres Internal URL (same region as web service)."
   fi
   log "Database not ready (${attempt}/${max_attempts}), retrying in 3s..."
   attempt=$((attempt + 1))

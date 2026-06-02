@@ -1,4 +1,4 @@
-# Root Dockerfile for Railway (repo root build context).
+# Root Dockerfile for Render (repo root build context).
 # Builds the Express backend from backend/
 
 FROM node:20-alpine AS base

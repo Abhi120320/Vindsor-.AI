@@ -10,7 +10,7 @@ Hyperlocal grocery marketplace with AI shopping assistant, vendor bargaining, re
 | Backend | Express 5, TypeScript, Prisma, PostgreSQL, Redis |
 | Realtime | Socket.IO |
 | AI | Groq (grocery bot + vendor advisor) |
-| Deploy | Docker Compose (local), **Railway** (backend), Vercel (frontend) |
+| Deploy | Docker Compose (local), **Render** (backend), Vercel (frontend) |
 
 ## Quick start (Docker)
 
@@ -148,11 +148,11 @@ If build logs show success but the site still says `NOT_FOUND` with no HTML, the
 
 | Name | Example |
 |------|---------|
-| `BACKEND_API_URL` | `https://your-backend.up.railway.app` |
+| `BACKEND_API_URL` | `https://your-backend.onrender.com` |
 | `NEXT_PUBLIC_BACKEND_URL` | same as above |
 | `NEXT_PUBLIC_SOCKET_URL` | same as above |
 
-Deploy the **backend** on Railway first, then paste its public HTTPS URL into Vercel.
+Deploy the **backend** on Render first, then paste its public HTTPS URL into Vercel.
 
 On the backend, set `FRONTEND_URL` to your Vercel domain (e.g. `https://vindsor-ai.vercel.app`).
 
@@ -163,19 +163,19 @@ On the backend, set `FRONTEND_URL` to your Vercel domain (e.g. `https://vindsor-
 | `NEXT_PUBLIC_SUPABASE_URL` | Optional analytics logging |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Optional analytics logging |
 
-## Deploy backend on Railway
+## Deploy backend on Render
 
-**Step-by-step:** [`RAILWAY_DEPLOY.md`](RAILWAY_DEPLOY.md)
+**Step-by-step:** [`RENDER_DEPLOY.md`](RENDER_DEPLOY.md)
 
 | Setting | Value |
 |---------|--------|
-| **Source** | GitHub repo `Abhi120320/Vindsor-.AI` |
-| **Builder** | Dockerfile (root `Dockerfile`) |
-| **Database** | Add PostgreSQL plugin, reference `DATABASE_URL` |
+| **Root Directory** | *(leave empty)* |
+| **Dockerfile Path** | `Dockerfile` |
+| **Runtime** | Docker |
 
-Required env vars: `DATABASE_URL` (from Postgres reference), `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_URL`, `GROQ_API_KEY`, `RUN_SEED=true` (first deploy).
+Or use **Blueprint** with [`render.yaml`](render.yaml) — creates Postgres + API automatically.
 
-Config files: [`railway.toml`](railway.toml), [`railway.json`](railway.json).
+Required env vars: `DATABASE_URL` (Render Postgres Internal URL), `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_URL`, `GROQ_API_KEY`, `RUN_SEED=true` (first deploy).
 
 ## License
 
