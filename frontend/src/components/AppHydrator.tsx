@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { useCustomerNotifications } from '@/hooks/useCustomerNotifications';
+import { useFrequentProductDealAlerts } from '@/hooks/useFrequentProductDealAlerts';
 
 export function AppHydrator() {
   const hydrateCatalog = useAppStore((s) => s.hydrateCatalog);
@@ -11,6 +12,7 @@ export function AppHydrator() {
   const currentUser = useAppStore((s) => s.currentUser);
 
   useCustomerNotifications();
+  useFrequentProductDealAlerts();
 
   useEffect(() => {
     hydrateCatalog();

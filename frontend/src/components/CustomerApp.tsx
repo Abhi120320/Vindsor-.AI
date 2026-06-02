@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import GroceryBot from './GroceryBot';
 import { BargainingChat } from './BargainingChat';
+import { CustomerPurchaseInsights } from './CustomerPurchaseInsights';
 import {
   computeCustomerImpact,
   computeLoyaltyCoins,
@@ -804,6 +805,14 @@ Keep your food fresh and prices fair.
                   <div className="absolute -bottom-8 -right-8 w-44 h-44 rounded-full bg-[#1E6B3F]/5 blur-2xl"></div>
                 </div>
 
+                {/* Frequently bought analytics */}
+                <CustomerPurchaseInsights
+                  orders={orders}
+                  products={products}
+                  customerId={currentUser?.id}
+                  onAddToCart={(productId) => addToCart(productId, 1)}
+                />
+
                 {/* 3. FOUR MID-PANEL GRID WIDGETS */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   
@@ -1278,6 +1287,15 @@ Keep your food fresh and prices fair.
             <span>Click mic to speak</span>
           </button>
         </div>
+
+        {/* Widget: Frequently bought */}
+        <CustomerPurchaseInsights
+          orders={orders}
+          products={products}
+          customerId={currentUser?.id}
+          onAddToCart={(productId) => addToCart(productId, 1)}
+          compact
+        />
 
         {/* Widget B: Shopping Cart Summary */}
         <div className="flex-1 flex flex-col space-y-4 min-h-[300px]">
