@@ -96,4 +96,17 @@ NEXT_PUBLIC_SOCKET_URL=https://YOUR-SERVICE.onrender.com
 | `DATABASE_URL is not set` | Create Postgres; paste Internal URL on web service |
 | `Applying database schema...` then exit 1 | Wrong/missing `DATABASE_URL` |
 | `npm warn deprecated` during build | Harmless — ignore |
+| `buildcache: not found` / `registry cache importer` | **Render-side** — no code fix. See below |
 | CORS errors | `FRONTEND_URL` must match Vercel URL exactly |
+
+### `buildcache: not found` (registry cache importer)
+
+Render tries to load a **previous build cache** that does not exist yet (new service, first deploy, or after **Clear build cache**).
+
+**This is not a bug in your Dockerfile.**
+
+1. Click **Manual Deploy** again (do **not** clear cache this time).
+2. If it still fails: **Manual Deploy → Clear build cache & deploy** once.
+3. If both fail: wait 2 minutes and deploy again, or create a fresh web service linked to the same repo.
+
+On many first deploys the log shows this message but the build **continues** and finishes. Only worry if the deploy status is **Failed** and no image was pushed.
