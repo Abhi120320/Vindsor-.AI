@@ -167,12 +167,14 @@ On the backend, set `FRONTEND_URL` to your Vercel domain (e.g. `https://vindsor-
 
 | Setting | Value |
 |---------|--------|
-| **Root Directory** | `backend` |
+| **Root Directory** | *(leave empty)* |
 | **Dockerfile Path** | `Dockerfile` |
 
-Using `.` as Root Directory causes: `docker-entrypoint.sh: not found`.
+A root `Dockerfile` is included — it builds `backend/` automatically.
 
-Or deploy via the repo's `render.yaml` blueprint.
+Alternative: Root Directory = `backend`, Dockerfile Path = `Dockerfile`.
+
+**Check the connected GitHub repo is `Abhi120320/Vindsor-.AI`** (not a typo/missing repo).
 
 Env vars: `DATABASE_URL`, `REDIS_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `GROQ_API_KEY`, `FRONTEND_URL`, `RUN_SEED=true` (first deploy only).
 
