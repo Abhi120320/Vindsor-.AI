@@ -5,7 +5,9 @@ FROM node:20-alpine AS base
 RUN apk add --no-cache openssl libc6-compat
 WORKDIR /app
 COPY backend/package.json backend/package-lock.json ./
-RUN npm ci --legacy-peer-deps
+# Quiet install — deprecation warnings are from transitive deps, not deploy failures
+ENV NPM_CONFIG_LOGLEVEL=error
+RUN npm ci --legacy-peer-deps --no-audit --no-fund
 
 FROM base AS build
 COPY backend/ .
