@@ -10,7 +10,7 @@ Hyperlocal grocery marketplace with AI shopping assistant, vendor bargaining, re
 | Backend | Express 5, TypeScript, Prisma, PostgreSQL, Redis |
 | Realtime | Socket.IO |
 | AI | Groq (grocery bot + vendor advisor) |
-| Deploy | Docker Compose, Railway-ready backend |
+| Deploy | Docker Compose (local), **Railway** (backend), Vercel (frontend) |
 
 ## Quick start (Docker)
 
@@ -152,7 +152,7 @@ If build logs show success but the site still says `NOT_FOUND` with no HTML, the
 | `NEXT_PUBLIC_BACKEND_URL` | same as above |
 | `NEXT_PUBLIC_SOCKET_URL` | same as above |
 
-Deploy the **backend** first (Railway/Render/Docker), then paste its public HTTPS URL here.
+Deploy the **backend** on Railway first, then paste its public HTTPS URL into Vercel.
 
 On the backend, set `FRONTEND_URL` to your Vercel domain (e.g. `https://vindsor-ai.vercel.app`).
 
@@ -163,19 +163,19 @@ On the backend, set `FRONTEND_URL` to your Vercel domain (e.g. `https://vindsor-
 | `NEXT_PUBLIC_SUPABASE_URL` | Optional analytics logging |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Optional analytics logging |
 
-## Deploy backend on Render
+## Deploy backend on Railway
 
-**Full step-by-step guide:** [`RENDER_DEPLOY.md`](RENDER_DEPLOY.md)
+**Step-by-step:** [`RAILWAY_DEPLOY.md`](RAILWAY_DEPLOY.md)
 
 | Setting | Value |
 |---------|--------|
-| **Root Directory** | *(leave empty)* |
-| **Dockerfile Path** | `Dockerfile` |
-| **Runtime** | Docker |
+| **Source** | GitHub repo `Abhi120320/Vindsor-.AI` |
+| **Builder** | Dockerfile (root `Dockerfile`) |
+| **Database** | Add PostgreSQL plugin, reference `DATABASE_URL` |
 
-Or use **Blueprint** with [`render.yaml`](render.yaml) — creates Postgres + API automatically.
+Required env vars: `DATABASE_URL` (from Postgres reference), `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_URL`, `GROQ_API_KEY`, `RUN_SEED=true` (first deploy).
 
-Required env vars: `DATABASE_URL` (Render Postgres Internal URL), `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_URL`, `GROQ_API_KEY`, `RUN_SEED=true` (first deploy).
+Config files: [`railway.toml`](railway.toml), [`railway.json`](railway.json).
 
 ## License
 

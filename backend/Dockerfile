@@ -1,3 +1,4 @@
+# Use root Dockerfile for Railway (repo root). This file is for local backend-only builds.
 FROM node:20-alpine AS base
 RUN apk add --no-cache openssl libc6-compat
 WORKDIR /app
