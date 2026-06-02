@@ -1,6 +1,34 @@
 # Deploy backend on Render (simplest path)
 
-Docker on Render often fails (`buildcache not found`, cache errors). **Use Node runtime instead** — configured in `render.yaml`.
+## Fix: `buildcache: not found` / `registry cache importer`
+
+**You are on Docker.** Render is building a Docker image — that causes this error.
+
+**Fix: switch to Node (2 minutes)**
+
+1. Open your **web service** on Render → **Settings**
+2. Change **Language / Runtime** from **Docker** to **Node**
+3. Set **Root Directory** to `backend`
+4. **Build Command:**
+   ```
+   npm ci --legacy-peer-deps --no-audit --no-fund && npx prisma generate && npm run build
+   ```
+5. **Pre-Deploy Command:**
+   ```
+   node scripts/render-boot.cjs
+   ```
+6. **Start Command:**
+   ```
+   npm start
+   ```
+7. Clear **Dockerfile Path** (leave empty)
+8. **Save** → **Manual Deploy**
+
+The repo no longer has a root `Dockerfile`, so Render will not force Docker on new deploys.
+
+---
+
+Docker on Render often fails (`buildcache not found`, cache errors). **Use Node runtime** — configured in `render.yaml`.
 
 ---
 

@@ -173,7 +173,7 @@ On the backend, set `FRONTEND_URL` to your Vercel domain (e.g. `https://vindsor-
 | **Root Directory** | `backend` |
 | **Blueprint** | [`render.yaml`](render.yaml) auto-wires Postgres + `DATABASE_URL` |
 
-Docker (`Dockerfile` at repo root) is optional and not recommended on Render.
+Docker (`docker/Render.Dockerfile`) is only for advanced/local use — **not** for Render web services.
 
 ## License
 

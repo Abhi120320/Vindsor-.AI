@@ -1,5 +1,5 @@
-# Root Dockerfile for Render (optional — prefer Node runtime in render.yaml).
-# Builds the Express backend from backend/
+# Optional Docker build for Render (not recommended — use Node runtime in render.yaml).
+# Build from repo root: docker build -f docker/Render.Dockerfile .
 
 FROM node:20-alpine AS base
 RUN apk add --no-cache openssl libc6-compat
@@ -12,7 +12,7 @@ FROM base AS build
 COPY backend/ .
 RUN npx prisma generate
 RUN npm run build
-RUN test -f dist/prisma/seed.js || (echo "Missing dist/prisma/seed.js — seed was not compiled" && exit 1)
+RUN test -f dist/prisma/seed.js || (echo "Missing dist/prisma/seed.js" && exit 1)
 
 FROM node:20-alpine AS runner
 RUN apk add --no-cache openssl libc6-compat
