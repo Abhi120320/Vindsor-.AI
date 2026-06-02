@@ -1,37 +1,75 @@
 #!/bin/sh
-set -e
+set -eu
 
-if [ -z "$DATABASE_URL" ]; then
-  echo "ERROR: DATABASE_URL is not set."
-  echo "Render: New → PostgreSQL, then add DATABASE_URL to this web service Environment."
+log() {
+  printf '%s\n' "$1"
+}
+
+fail() {
+  printf 'ERROR: %s\n' "$1" >&2
   exit 1
+}
+
+normalize_database_url() {
+  url="$1"
+  case "$url" in
+    postgresql://*|postgres://*) ;;
+    *) fail "DATABASE_URL must start with postgresql:// or postgres://" ;;
+  esac
+
+  case "$url" in
+    *localhost*|*127.0.0.1*)
+      fail "DATABASE_URL points to localhost. Link Render Postgres Internal Database URL to this service."
+      ;;
+  esac
+
+  case "$url" in
+    *render.com*)
+      case "$url" in
+        *sslmode=*|*ssl=*)
+          printf '%s' "$url"
+          ;;
+        *)
+          case "$url" in
+            *\?*) printf '%s' "${url}&sslmode=require" ;;
+            *) printf '%s' "${url}?sslmode=require" ;;
+          esac
+          ;;
+      esac
+      ;;
+    *)
+      printf '%s' "$url"
+      ;;
+  esac
+}
+
+if [ -z "${DATABASE_URL:-}" ]; then
+  fail "DATABASE_URL is not set. Create Render PostgreSQL and add its Internal Database URL to Environment."
 fi
 
-case "$DATABASE_URL" in
-  *localhost*|*127.0.0.1*)
-    echo "ERROR: DATABASE_URL points to localhost — it will not work on Render."
-    echo "Use the Internal Database URL from your Render Postgres instance."
-    exit 1
-    ;;
-esac
+export DATABASE_URL="$(normalize_database_url "$DATABASE_URL")"
 
-echo "Applying database schema..."
+log "Applying database schema..."
 attempt=1
-max_attempts=10
-until npx prisma db push; do
+max_attempts=30
+until npx prisma db push --skip-generate; do
   if [ "$attempt" -ge "$max_attempts" ]; then
-    echo "ERROR: prisma db push failed after $max_attempts attempts."
-    echo "Verify Postgres is running and DATABASE_URL is correct (same region as this service)."
-    exit 1
+    fail "prisma db push failed after ${max_attempts} attempts. Verify Postgres is running and DATABASE_URL uses the Internal URL (same region)."
   fi
-  echo "Database not ready (attempt $attempt/$max_attempts), retrying in 5s..."
+  log "Database not ready (${attempt}/${max_attempts}), retrying in 3s..."
   attempt=$((attempt + 1))
-  sleep 5
+  sleep 3
 done
+log "Database schema applied."
 
-if [ "$RUN_SEED" = "true" ]; then
-  echo "Seeding database..."
-  timeout 30s npx prisma db seed || echo "Seed skipped (already seeded or unavailable in container)."
+if [ "${RUN_SEED:-false}" = "true" ]; then
+  log "Running database seed..."
+  if node dist/prisma/seed.js; then
+    log "Seed finished."
+  else
+    log "Seed skipped or failed (non-fatal if data already exists)."
+  fi
 fi
 
+log "Starting application..."
 exec "$@"

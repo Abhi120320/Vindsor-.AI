@@ -9,13 +9,12 @@ services:
     name: vindsor-api
     runtime: docker
     plan: free
+    region: singapore
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: "8080"
       - key: DATABASE_URL
         fromDatabase:
           name: vindsor-db
@@ -26,7 +25,9 @@ services:
         generateValue: true
       - key: FRONTEND_URL
         value: https://vindsor-ai.vercel.app
+      - key: COOKIE_SECURE
+        value: "true"
       - key: RUN_SEED
         value: "true"
-      - key: REDIS_URL
-        value: redis://127.0.0.1:6379
+      - key: GROQ_API_KEY
+        sync: false

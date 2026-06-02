@@ -165,42 +165,17 @@ On the backend, set `FRONTEND_URL` to your Vercel domain (e.g. `https://vindsor-
 
 ## Deploy backend on Render
 
+**Full step-by-step guide:** [`RENDER_DEPLOY.md`](RENDER_DEPLOY.md)
+
 | Setting | Value |
 |---------|--------|
 | **Root Directory** | *(leave empty)* |
 | **Dockerfile Path** | `Dockerfile` |
+| **Runtime** | Docker |
 
-A root `Dockerfile` is included — it builds `backend/` automatically.
+Or use **Blueprint** with [`render.yaml`](render.yaml) — creates Postgres + API automatically.
 
-Alternative: Root Directory = `backend`, Dockerfile Path = `Dockerfile`.
-
-**Check the connected GitHub repo is `Abhi120320/Vindsor-.AI`** (not a typo/missing repo).
-
-Env vars: `DATABASE_URL`, `REDIS_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `GROQ_API_KEY`, `FRONTEND_URL`, `RUN_SEED=true` (first deploy only).
-
-### Render Postgres (required — deploy fails without this)
-
-If logs show `Applying database schema...` then `Exited with status 1`:
-
-1. **Render Dashboard → New → PostgreSQL** (same region as your web service)
-2. Open your **Web Service → Environment**
-3. Add **`DATABASE_URL`** = **Internal Database URL** from Postgres (starts with `postgresql://`)
-4. Add the other env vars below
-5. **Manual Deploy → Clear cache & deploy**
-
-Or redeploy using the repo **`render.yaml`** blueprint (creates Postgres + web service together).
-
-| Variable | Required | Example |
-|----------|----------|---------|
-| `DATABASE_URL` | **Yes** | Internal URL from Render Postgres |
-| `JWT_ACCESS_SECRET` | Yes | random 32+ char string |
-| `JWT_REFRESH_SECRET` | Yes | random 32+ char string |
-| `GROQ_API_KEY` | Yes | from console.groq.com |
-| `FRONTEND_URL` | Yes | `https://vindsor-ai.vercel.app` |
-| `PORT` | Yes | `8080` |
-| `NODE_ENV` | Yes | `production` |
-| `RUN_SEED` | First deploy | `true` then `false` |
-| `REDIS_URL` | Optional | cache only; app starts without Redis |
+Required env vars: `DATABASE_URL` (Render Postgres Internal URL), `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_URL`, `GROQ_API_KEY`, `RUN_SEED=true` (first deploy).
 
 ## License
 

@@ -8,20 +8,15 @@ const server = createServer(app);
 initSocket(server);
 
 const bootstrap = async () => {
-  try {
-    await prisma.$connect();
-  } catch (error) {
+  await prisma.$connect();
+  server.listen(env.PORT, "0.0.0.0", () => {
     // eslint-disable-next-line no-console
-    console.warn("Database not reachable at startup. Server will run with degraded DB features.", error);
-  }
-  server.listen(env.PORT, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Vendsor .AI backend running on http://localhost:${env.PORT}`);
+    console.log(`Vendsor .AI backend listening on 0.0.0.0:${env.PORT}`);
   });
 };
 
 bootstrap().catch((err) => {
   // eslint-disable-next-line no-console
-  console.error(err);
+  console.error("Failed to start server:", err);
   process.exit(1);
 });

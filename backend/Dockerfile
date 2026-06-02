@@ -1,4 +1,5 @@
 FROM node:20-alpine AS base
+RUN apk add --no-cache openssl libc6-compat
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --legacy-peer-deps
@@ -7,8 +8,10 @@ FROM base AS build
 COPY . .
 RUN npx prisma generate
 RUN npm run build
+RUN test -f dist/prisma/seed.js || (echo "Missing dist/prisma/seed.js — seed was not compiled" && exit 1)
 
 FROM node:20-alpine AS runner
+RUN apk add --no-cache openssl libc6-compat
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /app/package.json /app/package-lock.json ./

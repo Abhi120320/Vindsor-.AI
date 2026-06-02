@@ -7,6 +7,7 @@ import rateLimit from "express-rate-limit";
 import swaggerUi from "swagger-ui-express";
 import { env } from "./config/env";
 import { swaggerSpec } from "./config/swagger";
+import { prisma } from "./database/prisma";
 import authRoutes from "./modules/auth/auth.routes";
 import userRoutes from "./modules/users/users.routes";
 import vendorRoutes from "./modules/vendors/vendors.routes";
@@ -55,8 +56,13 @@ app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
+app.get("/health", async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: "ok", database: "connected" });
+  } catch {
+    res.status(503).json({ status: "degraded", database: "disconnected" });
+  }
 });
 
 app.get("/", (_req, res) => {

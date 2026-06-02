@@ -19,7 +19,7 @@
   "license": "ISC",
   "type": "commonjs",
   "prisma": {
-    "seed": "ts-node-dev --transpile-only prisma/seed.ts"
+    "seed": "node dist/prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

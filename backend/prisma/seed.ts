@@ -21,6 +21,13 @@ async function createUserWithRole(input: {
 }
 
 async function main() {
+  const existingUsers = await prisma.user.count();
+  if (existingUsers > 0) {
+    // eslint-disable-next-line no-console
+    console.log(`Seed skipped: ${existingUsers} user(s) already exist.`);
+    return;
+  }
+
   const admin = await createUserWithRole({
     name: "Admin",
     phone: "9000000001",
@@ -134,6 +141,9 @@ async function main() {
       type: "SYSTEM",
     },
   });
+
+  // eslint-disable-next-line no-console
+  console.log("Seed complete: demo users and sample data created.");
 }
 
 main()
