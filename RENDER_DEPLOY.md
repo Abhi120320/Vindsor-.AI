@@ -7,18 +7,19 @@ Your **web service** does not have `DATABASE_URL`. Postgres on Render does **not
 ### Quick fix (2 minutes)
 
 1. Open [Render Dashboard](https://dashboard.render.com)
-2. If you have **no** Postgres yet: **New → PostgreSQL** (same region as your web app, e.g. Singapore)
-3. Click your **web service** (e.g. `Vindsor-.AI`) — **not** the Postgres service
-4. Go to **Environment** (left sidebar)
-5. Click **Add Environment Variable**
-   - **Key:** `DATABASE_URL` (exact spelling, all caps)
-   - **Value:** open your **PostgreSQL** service → **Info** or **Connect** → copy **Internal Database URL**  
-     (starts with `postgresql://`, host often contains `render.com` or an internal hostname — **not** `localhost`)
-6. Add the other required vars if missing (see table below)
-7. Click **Save Changes** — Render will redeploy automatically
-8. Wait until status is **Live**, then check logs for `Database schema applied.`
+2. If you have **no** Postgres yet: **New → PostgreSQL** (same region as your web app)
+3. Click your **Docker web service** (e.g. `Vindsor-.AI`) — **not** the Postgres box alone
+4. **Environment** → **Add Environment Variable**
+5. Choose **Add from database** (or **Link database**) → select your **PostgreSQL** service
+6. Add **`DATABASE_URL`** from the list (recommended)
 
-**Common mistake:** Adding `DATABASE_URL` only on the Postgres service. It must be on the **Docker web service** that runs your API.
+   **Or** add these four together from the same Postgres service:
+   `PGHOST`, `PGUSER`, `PGPASSWORD`, `PGDATABASE` (the app builds `DATABASE_URL` automatically)
+
+7. Click **Save Changes** — Render redeploys
+8. Logs should show `Database schema applied.` then `Starting application...`
+
+**Common mistake:** Variables only exist on the Postgres service. They must be on the **web/API** service that runs the Dockerfile.
 
 ---
 

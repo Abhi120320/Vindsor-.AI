@@ -1,5 +1,11 @@
 import "dotenv/config";
 import { z } from "zod";
+import { resolveDatabaseUrl } from "./database-url";
+
+const resolvedDatabaseUrl = resolveDatabaseUrl();
+if (resolvedDatabaseUrl) {
+  process.env.DATABASE_URL = resolvedDatabaseUrl;
+}
 
 const isProduction = process.env.NODE_ENV === "production";
 

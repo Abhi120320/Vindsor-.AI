@@ -10,6 +10,23 @@ fail() {
   exit 1
 }
 
+resolve_database_url() {
+  if [ -n "${DATABASE_URL:-}" ]; then
+    return 0
+  fi
+  resolved="$(node -e "
+    const { resolveDatabaseUrl } = require('/app/dist/src/config/database-url');
+    const url = resolveDatabaseUrl(process.env);
+    if (url) process.stdout.write(url);
+  " 2>/dev/null || true)"
+  if [ -n "$resolved" ]; then
+    export DATABASE_URL="$resolved"
+    log "Using database URL built from PGHOST/PGUSER/PGPASSWORD/PGDATABASE."
+    return 0
+  fi
+  return 1
+}
+
 normalize_database_url() {
   url="$1"
   case "$url" in
@@ -19,7 +36,7 @@ normalize_database_url() {
 
   case "$url" in
     *localhost*|*127.0.0.1*)
-      fail "DATABASE_URL points to localhost. Use Render Postgres Internal Database URL on this web service."
+      fail "DATABASE_URL points to localhost. On Render, link Postgres to this web service (see RENDER_DEPLOY.md)."
       ;;
   esac
 
@@ -39,8 +56,17 @@ normalize_database_url() {
   esac
 }
 
-if [ -z "${DATABASE_URL:-}" ]; then
-  fail "DATABASE_URL is not set. Render: New → PostgreSQL, then add Internal Database URL to this service Environment."
+if ! resolve_database_url; then
+  fail "DATABASE_URL is not set.
+
+On Render:
+  1. Create PostgreSQL (New → PostgreSQL)
+  2. Open your WEB service (Docker) → Environment
+  3. Add Environment Variable → pick PostgreSQL → select DATABASE_URL
+     OR add PGHOST, PGUSER, PGPASSWORD, PGDATABASE from the same menu
+  4. Save Changes and wait for redeploy
+
+The variable must be on the web service, not only on the database service."
 fi
 
 export DATABASE_URL="$(normalize_database_url "$DATABASE_URL")"
@@ -50,7 +76,7 @@ attempt=1
 max_attempts=30
 until npx prisma db push --skip-generate; do
   if [ "$attempt" -ge "$max_attempts" ]; then
-    fail "prisma db push failed after ${max_attempts} attempts. Use Postgres Internal URL (same region as web service)."
+    fail "prisma db push failed after ${max_attempts} attempts. Link Postgres to this web service (same region)."
   fi
   log "Database not ready (${attempt}/${max_attempts}), retrying in 3s..."
   attempt=$((attempt + 1))
