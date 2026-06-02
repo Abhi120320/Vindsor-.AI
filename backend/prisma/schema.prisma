@@ -1,0 +1,222 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+  VENDOR
+  SUPPLIER
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REJECTED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  SYSTEM
+  ORDER
+  INVENTORY
+  PAYMENT
+  FORECAST
+  PROMOTION
+}
+
+model User {
+  id                 String         @id @default(cuid())
+  name               String
+  phone              String         @unique
+  email              String?        @unique
+  password           String?
+  role               Role
+  avatar             String?
+  otpCode            String?
+  otpExpiresAt       DateTime?
+  refreshTokenHash   String?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  vendor             Vendor?
+  supplier           Supplier?
+  customerOrders     Order[]        @relation("buyerOrders")
+  notifications      Notification[]
+}
+
+model Vendor {
+  id                  String          @id @default(cuid())
+  userId              String          @unique
+  businessName        String
+  location            String
+  category            String
+  rating              Float           @default(0)
+  healthScore         Int             @default(0)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products            Product[]
+  inventory           Inventory[]
+  sellerOrders        Order[]         @relation("sellerOrders")
+  wasteListings       WasteListing[]
+  forecasts           Forecast[]
+  healthScores        HealthScore[]
+}
+
+model Supplier {
+  id                  String          @id @default(cuid())
+  userId              String          @unique
+  businessName        String
+  location            String
+  verified            Boolean         @default(false)
+  rating              Float           @default(0)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products            Product[]
+}
+
+model Product {
+  id                  String          @id @default(cuid())
+  vendorId            String?
+  supplierId          String?
+  name                String
+  description         String
+  category            String
+  price               Float
+  stock               Int
+  imageUrl            String?
+  quality             String?
+  expiryDate          DateTime?
+  lowestPrice         Float?
+  rescueThresholdDays Int             @default(2)
+  rescueNotifiedAt    DateTime?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  vendor              Vendor?         @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  supplier            Supplier?       @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  inventory           Inventory[]
+  orderItems          OrderItem[]
+}
+
+model Inventory {
+  id                  String          @id @default(cuid())
+  vendorId            String
+  productId           String
+  quantity            Int
+  threshold           Int
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  vendor              Vendor          @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  product             Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([vendorId, productId])
+}
+
+model Order {
+  id                  String          @id @default(cuid())
+  buyerId             String
+  sellerId            String
+  totalAmount         Float
+  status              OrderStatus     @default(PENDING)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  buyer               User            @relation("buyerOrders", fields: [buyerId], references: [id], onDelete: Cascade)
+  seller              Vendor          @relation("sellerOrders", fields: [sellerId], references: [id], onDelete: Cascade)
+  items               OrderItem[]
+  payment             Payment?
+}
+
+model OrderItem {
+  id                  String          @id @default(cuid())
+  orderId             String
+  productId           String
+  quantity            Int
+  unitPrice           Float
+  createdAt           DateTime        @default(now())
+  order               Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product             Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id                  String          @id @default(cuid())
+  orderId             String          @unique
+  amount              Float
+  status              PaymentStatus   @default(PENDING)
+  razorpayOrderId     String?
+  razorpayPaymentId   String?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  order               Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model WasteListing {
+  id                  String          @id @default(cuid())
+  vendorId            String
+  productName         String
+  quantity            Int
+  price               Float
+  imageUrl            String?
+  expiryDate          DateTime
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  vendor              Vendor          @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+}
+
+model Forecast {
+  id                  String          @id @default(cuid())
+  vendorId            String
+  predictedDemand     Json
+  confidenceScore     Float
+  weatherData         Json
+  createdAt           DateTime        @default(now())
+  vendor              Vendor          @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id                  String           @id @default(cuid())
+  userId              String
+  title               String
+  message             String
+  isRead              Boolean          @default(false)
+  type                NotificationType @default(SYSTEM)
+  createdAt           DateTime         @default(now())
+  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model HealthScore {
+  id                  String          @id @default(cuid())
+  vendorId            String
+  score               Int
+  profitability       Float
+  inventoryEfficiency Float
+  customerRating      Float
+  createdAt           DateTime        @default(now())
+  vendor              Vendor          @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+}
+
+model ExtractedInvoice {
+  id                  String          @id @default(cuid())
+  userId              String?
+  imageUrl            String
+  vendorName          String?
+  extractedItems      Json
+  quantity            Int?
+  total               Float?
+  createdAt           DateTime        @default(now())
+}

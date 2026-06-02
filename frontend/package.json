@@ -1,0 +1,41 @@
+{
+  "name": "vendsor-ai-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "WATCHPACK_POLLING=true node ./node_modules/next/dist/bin/next dev --webpack --hostname 127.0.0.1",
+    "build": "node ./node_modules/next/dist/bin/next build",
+    "start": "node ./node_modules/next/dist/bin/next start",
+    "lint": "node ./node_modules/eslint/bin/eslint.js .",
+    "backend:dev": "npm --prefix ../backend run dev",
+    "backend:build": "npm --prefix ../backend run build",
+    "backend:test": "npm --prefix ../backend run test"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.106.2",
+    "canvas-confetti": "^1.9.4",
+    "express-async-errors": "^3.1.1",
+    "framer-motion": "^12.40.0",
+    "lightningcss": "^1.32.0",
+    "lucide-react": "^1.17.0",
+    "next": "16.2.7",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-hot-toast": "^2.6.0",
+    "recharts": "^3.8.1",
+    "socket.io-client": "^4.8.3",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.7",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

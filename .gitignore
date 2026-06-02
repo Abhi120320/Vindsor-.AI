@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment & secrets (keep examples)
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# Next.js
+.next/
+**/.next/
+out/
+**/out/
+
+# Build output
+dist/
+**/dist/
+build/
+**/build/
+
+# Logs & debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# Testing
+coverage/
+**/coverage/
+
+# OS & editors
+.DS_Store
+Thumbs.db
+*.swm
+*.swo
+*~
+.idea/
+.vscode/
+*.pem
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel / deploy caches
+.vercel/
+.turbo/
+
+# Docker local volumes (if mounted as dirs)
+pg_data/
+
+# Prisma local sqlite (if used)
+*.db
+*.db-journal
+
+# Compiled artifacts outside dist/
+backend/prisma/*.js
+backend/prisma/*.js.map
+backend/tests/*.js
+backend/tests/*.js.map
