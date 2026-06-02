@@ -127,6 +127,23 @@ This repo is a **monorepo**. The Next.js app lives in `frontend/`, not the repos
 
 If **Root Directory** is wrong (empty or `.`), Vercel builds from the repo root where there is no Next.js app → you get a **`404: NOT_FOUND`** page at your deployment URL.
 
+### Critical Vercel dashboard settings (fix repeated NOT_FOUND)
+
+Go to **Project → Settings → Build and Deployment**:
+
+| Setting | Correct | Wrong (causes NOT_FOUND) |
+|---------|---------|--------------------------|
+| **Framework Preset** | **Next.js** | Other, Vite, Static |
+| **Root Directory** | `frontend` | empty or `.` |
+| **Output Directory** | **empty / blank** | `.next`, `out`, `dist` |
+| **Build Command** | empty (default) or `npm run build` | `next export` |
+
+After changing any of these: **Deployments → ⋯ → Redeploy → check "Clear build cache"**.
+
+Then open the URL from **Deployments → Visit** (do not guess the domain). Copy the exact `*.vercel.app` link shown there.
+
+If build logs show success but the site still says `NOT_FOUND` with no HTML, the deployment output was not wired to the domain — almost always **Framework Preset = Other** or **Output Directory** is set manually.
+
 ### Required environment variables (Vercel → Settings → Environment Variables)
 
 | Name | Example |

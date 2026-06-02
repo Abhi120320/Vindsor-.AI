@@ -2,6 +2,9 @@
   "name": "vendsor-ai-mvp",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "WATCHPACK_POLLING=true node ./node_modules/next/dist/bin/next dev --webpack --hostname 127.0.0.1",
     "build": "node ./node_modules/next/dist/bin/next build",
