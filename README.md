@@ -111,6 +111,41 @@ See [`frontend/.env.example`](frontend/.env.example).
 - Admin: vendor verification, dispute handling, platform metrics
 - Backend: JWT auth, RBAC, marketplace, orders, payments, notifications, forecasting
 
+## Deploy on Vercel (frontend)
+
+This repo is a **monorepo**. The Next.js app lives in `frontend/`, not the repository root.
+
+### Vercel project settings
+
+| Setting | Value |
+|---------|--------|
+| **Root Directory** | `frontend` |
+| **Framework Preset** | Next.js |
+| **Build Command** | `npm run build` (default) |
+| **Output Directory** | *(leave empty — Vercel handles `.next` automatically)* |
+| **Install Command** | `npm ci` or `npm install` |
+
+If **Root Directory** is wrong (empty or `.`), Vercel builds from the repo root where there is no Next.js app → you get a **`404: NOT_FOUND`** page at your deployment URL.
+
+### Required environment variables (Vercel → Settings → Environment Variables)
+
+| Name | Example |
+|------|---------|
+| `BACKEND_API_URL` | `https://your-backend.up.railway.app` |
+| `NEXT_PUBLIC_BACKEND_URL` | same as above |
+| `NEXT_PUBLIC_SOCKET_URL` | same as above |
+
+Deploy the **backend** first (Railway/Render/Docker), then paste its public HTTPS URL here.
+
+On the backend, set `FRONTEND_URL` to your Vercel domain (e.g. `https://vindsor-ai.vercel.app`).
+
+### Optional
+
+| Name | Purpose |
+|------|---------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Optional analytics logging |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Optional analytics logging |
+
 ## License
 
 Private — all rights reserved unless otherwise specified by the repository owner.
