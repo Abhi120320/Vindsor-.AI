@@ -163,6 +163,19 @@ On the backend, set `FRONTEND_URL` to your Vercel domain (e.g. `https://vindsor-
 | `NEXT_PUBLIC_SUPABASE_URL` | Optional analytics logging |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Optional analytics logging |
 
+## Deploy backend on Render
+
+| Setting | Value |
+|---------|--------|
+| **Root Directory** | `backend` |
+| **Dockerfile Path** | `Dockerfile` |
+
+Using `.` as Root Directory causes: `docker-entrypoint.sh: not found`.
+
+Or deploy via the repo's `render.yaml` blueprint.
+
+Env vars: `DATABASE_URL`, `REDIS_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `GROQ_API_KEY`, `FRONTEND_URL`, `RUN_SEED=true` (first deploy only).
+
 ## License
 
 Private — all rights reserved unless otherwise specified by the repository owner.
