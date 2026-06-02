@@ -1,4 +1,4 @@
-# Root Dockerfile for Render (repo root build context).
+# Root Dockerfile for Render (optional — prefer Node runtime in render.yaml).
 # Builds the Express backend from backend/
 
 FROM node:20-alpine AS base
@@ -22,6 +22,7 @@ COPY --from=build /app/package.json /app/package-lock.json ./
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/scripts ./scripts
 COPY --from=build /app/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 EXPOSE 8080

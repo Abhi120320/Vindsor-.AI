@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { z } from "zod";
-import { resolveDatabaseUrl } from "./database-url";
+import { getDatabaseUrl } from "./database-url";
 
-const resolvedDatabaseUrl = resolveDatabaseUrl();
+const resolvedDatabaseUrl = getDatabaseUrl();
 if (resolvedDatabaseUrl) {
   process.env.DATABASE_URL = resolvedDatabaseUrl;
 }

@@ -7,10 +7,13 @@ databases:
 services:
   - type: web
     name: vindsor-api
-    runtime: docker
+    runtime: node
     plan: free
     region: singapore
-    dockerfilePath: ./Dockerfile
+    rootDir: backend
+    buildCommand: npm ci --legacy-peer-deps --no-audit --no-fund && npx prisma generate && npm run build
+    startCommand: npm start
+    preDeployCommand: node scripts/render-boot.cjs
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV

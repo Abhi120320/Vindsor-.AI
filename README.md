@@ -165,17 +165,15 @@ On the backend, set `FRONTEND_URL` to your Vercel domain (e.g. `https://vindsor-
 
 ## Deploy backend on Render
 
-**Step-by-step:** [`RENDER_DEPLOY.md`](RENDER_DEPLOY.md)
+**Start here:** [`RENDER_DEPLOY.md`](RENDER_DEPLOY.md) — use **Node runtime** (not Docker) via Blueprint or manual settings.
 
 | Setting | Value |
 |---------|--------|
-| **Root Directory** | *(leave empty)* |
-| **Dockerfile Path** | `Dockerfile` |
-| **Runtime** | Docker |
+| **Runtime** | **Node** |
+| **Root Directory** | `backend` |
+| **Blueprint** | [`render.yaml`](render.yaml) auto-wires Postgres + `DATABASE_URL` |
 
-Or use **Blueprint** with [`render.yaml`](render.yaml) — creates Postgres + API automatically.
-
-Required env vars: `DATABASE_URL` (Render Postgres Internal URL), `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_URL`, `GROQ_API_KEY`, `RUN_SEED=true` (first deploy).
+Docker (`Dockerfile` at repo root) is optional and not recommended on Render.
 
 ## License
 
