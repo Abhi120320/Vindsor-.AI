@@ -165,15 +165,7 @@ On the backend, set `FRONTEND_URL` to your Vercel domain (e.g. `https://vindsor-
 
 ## Deploy backend on Render
 
-**Start here:** [`RENDER_DEPLOY.md`](RENDER_DEPLOY.md) — use **Node runtime** (not Docker) via Blueprint or manual settings.
-
-| Setting | Value |
-|---------|--------|
-| **Runtime** | **Node** |
-| **Root Directory** | `backend` |
-| **Blueprint** | [`render.yaml`](render.yaml) auto-wires Postgres + `DATABASE_URL` |
-
-Docker (`docker/Render.Dockerfile`) is only for advanced/local use — **not** for Render web services.
+[`RENDER_DEPLOY.md`](RENDER_DEPLOY.md) — delete old service → **New → Blueprint** → `render.yaml` → set `GROQ_API_KEY` → check `/health`.
 
 ## License
 
