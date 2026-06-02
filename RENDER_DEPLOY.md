@@ -1,5 +1,27 @@
 # Deploy Vendsor .AI Backend on Render
 
+## Fix: `DATABASE_URL is not set`
+
+Your **web service** does not have `DATABASE_URL`. Postgres on Render does **not** share env vars automatically unless you link them.
+
+### Quick fix (2 minutes)
+
+1. Open [Render Dashboard](https://dashboard.render.com)
+2. If you have **no** Postgres yet: **New → PostgreSQL** (same region as your web app, e.g. Singapore)
+3. Click your **web service** (e.g. `Vindsor-.AI`) — **not** the Postgres service
+4. Go to **Environment** (left sidebar)
+5. Click **Add Environment Variable**
+   - **Key:** `DATABASE_URL` (exact spelling, all caps)
+   - **Value:** open your **PostgreSQL** service → **Info** or **Connect** → copy **Internal Database URL**  
+     (starts with `postgresql://`, host often contains `render.com` or an internal hostname — **not** `localhost`)
+6. Add the other required vars if missing (see table below)
+7. Click **Save Changes** — Render will redeploy automatically
+8. Wait until status is **Live**, then check logs for `Database schema applied.`
+
+**Common mistake:** Adding `DATABASE_URL` only on the Postgres service. It must be on the **Docker web service** that runs your API.
+
+---
+
 ## Option A — Blueprint (Postgres + API auto-wired)
 
 1. [Render Dashboard](https://dashboard.render.com) → **New** → **Blueprint**
